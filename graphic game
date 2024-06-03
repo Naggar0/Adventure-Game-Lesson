@@ -1,0 +1,604 @@
+aimport turtle
+from turtle import *
+import random
+import time
+# TURTLE GRAPHICS
+window = turtle.Screen()
+window.bgcolor("white")
+window.tracer(0)
+# TURTLES
+ball = turtle.Turtle()
+grid = turtle.Turtle()
+grid.speed(0)
+grid.penup()
+grid.ht()
+t = turtle.Turtle()
+t.ht()
+#DEFINING CONSTANTS
+size = 40
+screenad = 200
+luckydice = 10
+keyCount = 0
+life = 3
+tries = 2
+#TRUE AND FALSE CONSTANTS
+lucky = False
+Sword = False
+Cipher = False
+deciphered = False
+defeat = False
+#LIST
+attackChoice = ["w", "a", "s", "d"]
+wordList = ["hello", "welcome", "trap", "code", "help", "cat", "smart", "johnny", "send"]
+Dmessage = ""
+#CREATING THE ENCRIPTED WORD AND THE AMOUNT ALTERED RANDOMLY
+code = random.randint(1, 100)
+r = random.randint(0, len(wordList)-1)
+sentence = wordList[r]
+#LOCATION OF WHERE YOU WANT PLAYER TO BE
+
+Map = [
+			[ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],#0, ROW - 10x10 SQUARE
+			[ 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 ],#1
+			[ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1 ],#2
+			[ 1, 2, 5, 1, 0, 0, 0, 0, 2, 0, 0, 0, 1 ],#3
+			[ 1, 0, 1, 6, 0, 0, 3, 1, 1, 1, 0, 0, 1 ],#4
+                        [ 1, 3, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1 ],#5
+                        [ 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 7, 9, 1 ],#6
+                        [ 1, 2, 0, 3, 0, 1, 1, 6, 0, 1, 1, 1, 1 ],#7
+                        [ 1, 0, 0, 1, 0, 0, 3, 0, 0, 0, 0, 0, 1 ],#8
+                        [ 1, 0, 1, 0, 0, 2, 1, 1, 1, 0, 4, 1, 1 ],#9
+                        [ 1, 8, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1 ],#10
+                        [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ] #11
+	]                #0  1  2  3  4  5  6  7  8  9, 10, 11, 12 COLUMN
+
+
+#Define a function to print our Map and current Player location
+# 1 is wall seen as 1
+# 2 is key seen as .
+# 3 is gate seen as [
+# 4 is sword chest seen as ?
+# 5 is an item chest seen as ?
+# 6 is a lucky dice seen as ,
+# 7 is the gatekeeper seen as +
+# 8 is the decoding machine, seen as =
+# 9 final exit, seen as @
+
+#CREATING ALL OF THE TURTLE VISUALS
+#RAWING SQUARES ON TURTLE GRAPHICS
+def drawsquare(x, y, size, grid, color):
+    grid.penup()
+    grid.goto(x, y) 
+    grid.pendown()
+    grid.fillcolor(color)
+    grid.begin_fill()
+    for square in range(4):
+        grid.forward(size)
+        grid.left(90)
+    grid.end_fill()
+#DRAWING CIRCLES ON TURTLE GRAPHICS
+def drawcircle(x, y, size, grid, color, Isize):
+    grid.penup()
+    grid.goto(x, y)
+    grid.pendown()
+    grid.fillcolor(color)
+    grid.begin_fill()
+    grid.circle(size/Isize)
+    grid.end_fill()
+#LOCATION OF PLAYER ON TURTLE GRAPHICS
+def drawplayer(x, y):
+    ball.penup()
+    ball.goto(x,y)
+    ball.shape("circle")
+    ball.color("black")
+#CREATING THE VISUALS IN IDLE SHELL
+def drawGrid(currX, currY, size, grid):
+    for y in range (0, len(Map)):
+        for x in range (0,len(Map[y])):
+            c = (size* x-screenad)
+            r = (size* -y+screenad)
+            if (currX == x) and (currY == y):   #print * if they are in this square
+                drawplayer(c+size/2, r+size/2)
+                drawsquare(c, r, size, grid, "white")
+            else:
+                if Map[y][x] == 0:
+                    drawsquare(c, r, size, grid, "white")
+                elif Map[y][x] == 2:
+                    drawsquare(c, r, size, grid, "white")
+                    drawcircle(c+size/2, r+size/4.5, size, grid, "yellow", 6)
+                elif Map[y][x] == 3:
+                    drawsquare(c, r, size, grid, "gray")
+                elif Map[y][x] == 4:
+                    drawsquare(c, r, size, grid, "brown")
+                elif Map[y][x] == 5:
+                    drawsquare(c, r, size, grid, "brown")
+                elif Map[y][x] == 6:
+                    drawsquare(c, r, size, grid, "white")
+                    drawcircle(c+size/2, r+size/4.5, size, grid, "gold", 8)
+                elif Map[y][x] == 7:
+                    drawsquare(c, r, size, grid, "white")
+                    drawcircle(c+size/2, r+size/4.5, size, grid, "red", 3)
+                elif Map[y][x] == 8:
+                    drawsquare(c, r, size, grid, "green")
+                elif Map[y][x] == 9:
+                    drawsquare(c, r, size, grid, "orange")
+                else:
+                    drawsquare(c, r, size, grid, "black")
+#DRAWING THE LIST ON IDLE SHELL
+def drawMap(currX, currY):
+    #print ("map size is : ", len(Map), " rows by ", len(Map[0]), " columns")
+    for y in range (0, len(Map)):
+        for x in range (0,len(Map[y])):
+            if (currX == x) and (currY == y):   #print * if they are in this square
+                print("*  ", end="")
+            else:
+                if Map[y][x] == 0:
+                    print(" "," ", end ="")
+                elif Map[y][x] == 2:
+                    print("."," ", end ="")
+                elif Map[y][x] == 3:
+                    print("["," ", end ="")
+                elif Map[y][x] == 4:
+                    print("?"," ", end ="")
+                elif Map[y][x] == 5:
+                    print("?"," ", end ="")
+                elif Map[y][x] == 6:
+                    print(","," ", end ="")
+                elif Map[y][x] == 7:
+                    print("+"," ", end ="")
+                elif Map[y][x] == 8:
+                    print("="," ", end ="")
+                elif Map[y][x] == 9:
+                    print("@"," ", end ="")
+                else:
+                    print (Map[y][x]," ", end ="") 
+        print()
+    print()
+
+def text(t, words):
+    t.penup()
+    t.goto(0, size*7)
+    t.write(words, move = False, align = 'center', font=('Arial', 40, 'normal'))
+#FUNCTION THAT CREATES ENCRIPTION
+def cipher(sentence, Num):
+    Emessage = ""
+    for letter in sentence:
+        Emessage += chr(ord(letter) + Num)
+    return(Emessage)
+#FUNCTION THAT INVOLVES GATE SHOWN AS EVENT 3
+def keything(x, y, key, Map, t): 
+    YN = input("would you like to use 1 of yours keys? Y/N: ").lower()
+    if YN == "y":
+        print("You opened the door!")
+        text(t, "DOOR OPENED")
+        key = key -1
+        Map[y][x] = 0
+        return (key)
+    elif YN == "n":
+        return(key)
+#FUNCTION THAT CREATES CHEST SHOWN AS EVENT 4 & 5
+def mystery(tool, x, y, lucky, item, t): 
+    chestroll = ["die", "item", "item", "item"]
+    print("This is a chest")
+    print("You have a 25% chance to get a", item)
+    print("However, it's  a 75% chance it's a trap and you die ")
+    print("Unless... you have a lucky dice to get the", item, "no matter what")
+    answer = input("Would u like open it? Y/N ").lower()
+    if answer == "y":
+        if lucky == True:
+            print("Since you have the lucky dice you get the", item, "instantly")
+            text(t, item)
+            tool = True
+            Map[y][x] = 0
+            return(tool)
+        else:
+            r = random.randint(0, len(chestroll)-1)
+            if chestroll[r] == "item":
+                tool = True
+                print("Congrats you have", item)
+                text(t, item)
+                Map[y][x] = 0
+                return(tool)
+            elif chestroll[r] == "die":
+                print("It was a trap and you died game over")
+                text(t, "GAME OVER")
+                exit()
+
+    elif answer == "n":
+        print("Fine, come back whenever")   
+#FUNCTION THAT CREATES GATEKEEPER SHOWN AS EVENT 7       
+def gatekeeper(x, y, attackChoice, Map, defeat, t):
+    i = 0
+    print("I am the gatekepper and we shall now begin combat")
+    print("I will perform an attack either from the right, left, upward or downward")
+    print("To defeat me you must select a direction I wont attack in")
+    print("If you pick the same direction as me, my blade will crush yours and you will die")
+    while i == 0:
+        choice = input("which way will you choose to attack w/a/s/d: ").lower()
+        t.clear()
+        for attack in range(0, len(attackChoice)):
+            if choice == attackChoice[attack]:
+                r = random.randint(0, len(attackChoice)-1)
+                print("MY CHOICE TO ATTACK IS", attackChoice[r])
+                if choice != attackChoice[r]:
+                    print("It would seem you have defeated me, Goodbye")
+                    text(t, "*, VICTORY")
+                    defeat = True
+                    Map[y][x] = 0
+                    return(defeat)
+                else:
+                    print("I have crushed your blade and ended you")
+                    exit()
+            else:
+                continue
+#FUNCTION THAT DECRIPTS CODE SHOWN AS EVENT 8
+def decriptionM(x, y, Emessage, deciphered): 
+    global life, Dmessage
+    print("This machine will dercript your message using the correct decription number")
+    print("This machine will stop working after", life," time(s) of use")
+    print("If you do not know how to get this decription code, it will be in one of the chest")
+    while life > 0:
+        YN = input("Are you ready to input your decription number Y/N: ").lower()
+        if YN == "y":
+            life = life -1
+            Num = int(input("Please enter your encription number: "))
+            Dmessage = ""
+            for letter in Emessage:
+                Dmessage += chr(ord(letter) - Num)
+                deciphered = True
+            print("Your decoded message is", Dmessage)
+            if life == 0:
+                print("This is the final attempt")
+                Map[y][x] = 0
+            return(deciphered, Dmessage)
+        else:
+            print("Very well")
+            return(deciphered, Dmessage)
+#FUNCTION THAT CREATES FINAL GATE SHOWN AS EVENT 9
+def finalGate(sentence, defeat, t):
+    global tries
+    done = False
+    print("You have beaten the gatekeeper so you are now ready for the trial")
+    print("This is the final challenge")
+    print("You will have", tries,"chance(s) to enter the correct phrase")
+    while tries > 0:
+        YN = input("Are you ready YN: ").lower()
+        if YN == "y":
+            tries = tries - 1
+            Final = input("Finally to win, enter the message: ").lower()
+            if Final == sentence:
+                print("CONGRATS YOU ARE THE WINNER")
+                text(t, "CONGRATS YOU ARE THE WINNER")
+                done = True
+                exit()
+            else:
+                if tries == 0:
+                    print("You have ran out of tries, game over")
+                    text(t, "GAME OVER")
+                    exit()
+                print("That was incorrect, please try again")
+        return()
+    
+#MOVES PLAYER AND ALSO ACTIVATES EVENTS    
+def movePlayer(x,y,moveDir, t):
+    global keyCount, Sword, Cipher, luckydice, lucky, deciphered, Emessage, Dmessage, sentence, defeat
+    t.clear()
+    #MOVE THE PLAYER UPWARD
+    if moveDir == "w": 
+        if Map[y-1][x] == 0: #Spaces player can go on
+            return (x, y-1)
+        
+        if Map[y-1][x] == 2: #Event where player finds a key
+            print("You found a key!")
+            text(t, "+1 KEY")
+            keyCount = keyCount + 1
+            Map[y-1][x] = 0
+            return (x, y-1)
+        
+        if Map[y-1][x] == 3: #Event where player comes across a gate
+            if keyCount != 0:
+                keyCount = keything(x, y-1, keyCount, Map, t)
+                return(x, y-1)
+            else:
+                print("You dont have a key to enter")
+                return(x, y)
+            
+        if Map[y-1][x] == 4: #Event where player find a chest with sword
+            Sword = mystery(Sword, x, y-1, lucky, "sword", t)
+            return (x, y-1)
+        
+        if Map[y-1][x] == 5: #Event where player finds a chest with code
+            Cipher = mystery(Cipher, x+1, y, lucky, "code", t)
+            return (x, y-1)
+        
+        if Map[y-1][x] == 6: #Event where player find lucky dice
+            print("You found a lucky dice! for the next 10 turns you will have extra luck")
+            print("This will allow you to get an item from a chest 100% of the time")
+            text(t, "+1 lucky dice")
+            Map[y-1][x] = 0
+            lucky = True
+            luckydice = 10
+            return (x, y-1)
+        
+        if Map[y-1][x] == 7: #Event where player comes across gatekeeper
+            if Sword == True:
+                YN = input("would you like to challenge the gatekeeper? Y/N: ").lower()
+                if YN == "y":
+                    defeat = gatekeeper(x, y-1, attackChoice, Map, defeat, t)
+                    return (x, y-1)
+                else:
+                    print("Ver ywell, challenge me once you are ready")
+                    return(x, y)
+            else:
+                print("You dont have a sword to challnge the gatekeeper")
+                return(x, y)
+            
+        if Map[y-1][x] == 8: #Event where player opens deription machine
+            deciphered, Dmessage = decriptionM(x, y-1, Emessage, deciphered)
+            return(x, y)
+        
+        if Map[y-1][x] == 9: #Event where player comes to final machine
+            if defeat == True:
+                finalGate(sentence, defeat, t)
+                if final == True:
+                    return (x, y-1)
+                else:
+                    return(x, y)
+            elif defeat == False:
+                print("Come back once you have defeated the gatekeeper")
+                return(x, y)
+    # MOVE THE PLAYER DOWN                            
+    if moveDir == "s":
+        if Map[y+1][x] == 0: #Spaces player can go on
+            return (x, y+1)
+        
+        if Map[y+1][x] == 2: #Event where player finds a key
+            print("You found a key!")
+            text(t, "+1 KEY")
+            keyCount = keyCount + 1
+            Map[y+1][x] = 0
+            return (x, y+1)
+        
+        if Map[y+1][x] == 3: #Event where player comes across a gate
+            if keyCount != 0:
+                keyCount = keything(x, y+1, keyCount, Map, t)
+                return(x, y+1)
+            else:
+                print("You dont have a key to enter")
+                return(x, y)
+                
+        if Map[y+1][x] == 4: #Event where player find a chest with sword
+            Sword = mystery(Sword, x, y+1, lucky, "sword", t)
+            return (x, y+1)
+        
+        if Map[y+1][x] == 5: #Event where player finds a chest with code
+            Cipher = mystery(Cipher, x, y+1, lucky, "code", t)
+            return (x, y+1)
+        
+        if Map[y+1][x] == 6: #Event where player find lucky dice
+            print("You found a lucky dice! for the next 10 turns you will have extra luck")
+            print("This will allow you to get an item from a chest 100% of the time")
+            Map[y+1][x] = 0
+            lucky = True
+            luckydice = 10
+            return (x, y+1)
+        
+        if Map[y+1][x] == 7: #Event where player comes across gatekeeper
+            if Sword == True:
+                YN = input("would you like to challenge the gatekeeper? Y/N: ").lower()
+                if YN == "y":
+                    defeat = gatekeeper(x, y+1, attackChoice, Map, defeat, t)
+                    return (x, y+1)
+                else:
+                    print("Very well, challenge me once your ready")
+                    return(x, y)
+            else:
+                print("You dont have a sword to challnge the gatekeeper")
+                return(x, y)
+            
+        if Map[y+1][x] == 8: #Event where player opens deription machine
+            deciphered, Dmessage = decriptionM(x, y+1, Emessage, deciphered)
+            return(x, y)
+        
+        if Map[y+1][x] == 9: #Event where player comes to final machine
+            if defeat == True:
+                finalGate(sentence, defeat, t)
+                if done == True:
+                    return (x, y+1)
+                else:
+                    return(x, y)
+            elif defeat == False:
+                print("Come back once you have defeated the gatekeeper")
+                return(x, y)
+    #MOVE PLAYER TO THE LEFT
+    if moveDir == "a": 
+        if Map[y][x-1] == 0: #Spaces player can go on
+            return (x-1, y)
+        
+        if Map[y][x-1] == 2: #Event where player finds a key
+            print("You found a key!")
+            text(t, "+1 KEY")
+            keyCount = keyCount + 1
+            Map[y][x-1] = 0
+            return (x-1, y)
+        
+        if Map[y][x-1] == 3: #Event where player comes across a gate
+            if keyCount != 0:
+                keything(x-1, y, keyCount, Map, t)
+                return(x-1, y)
+            else:
+                print("You dont have a key to enter")
+                return(x, y)
+            
+        if Map[y][x-1] == 4: #Event where player find a chest with sword
+            Sword = mystery(Sword, x-1, y, lucky, "sword", t)
+            return (x-1, y)
+        
+        if Map[y][x-1] == 5: #Event where player finds a chest with code
+            Cipher = mystery(Cipher, x-1, y, lucky, "code", t)
+            return (x-1, y)
+        
+        if Map[y][x-1] == 6: #Event where player find lucky dice
+            print("You found a lucky dice! for the next 10 turns you will have extra luck")
+            print("This will allow you to get an item from a chest 100% of the time")
+            luckydice = 10
+            Map[y][x-1] = 0
+            lucky = True
+            return (x-1, y)
+        
+        if Map[y][x-1] == 7: #Event where player comes across gatekeeper
+            if Sword == True:
+                YN = input("would you like to challenge the gatekeeper? Y/N: ").lower()
+                if YN == "y":
+                    defeat = gatekeeper(x-1, y, attackChoice, Map, defeat, t)
+                    return (x-1, y)
+                else:
+                    print("Very well, challenge me once your ready")
+                    return(x, y)
+            else:
+                print("You dont have a sword to challnge the gatekeeper")
+                return(x, y)
+            
+        if Map[y][x-1] == 8: #Event where player opens deription machine
+            deciphered, Dmessage = decriptionM(x-1, y, Emessage, deciphered)
+            return(x, y)
+        
+        if Map[y][x-1] == 9: #Event where player comes to final machine
+            if defeat == True:
+                finalGate(sentence, defeat, t)
+                if done == True:
+                    return (x-1, y)
+                else:
+                    return(x, y)
+            elif defeat == False:
+                print("Come back once you have defeated the gatekeeper")
+                return(x, y)
+    #MOVE THE PLAYER TO THE RIGHT
+    if moveDir == "d": 
+        if Map[y][x+1] == 0: #Spaces player can go on
+            return (x+1, y)
+        
+        if Map[y][x+1] == 2: #Event where player finds a key
+            print("You found a key!")
+            text(t, "+1 KEY")
+            keyCount = keyCount + 1
+            Map[y][x+1] = 0
+            return (x+1, y)
+        
+        if Map[y][x+1] == 3: #Event where player comes across a gate
+            if keyCount != 0:
+                keyCount = keything(x+1, y, keyCount, Map, t)
+                return(x+1, y)
+            else:
+                print("You dont have a key to enter")
+                return(x, y)
+            
+        if Map[y][x+1] == 4: #Event where player find a chest with sword
+            Sword = mystery(Sword, x+1, y, lucky, "sword", t)
+            return (x+1, y)
+        
+        if Map[y][x+1] == 5: #Event where player finds a chest with code
+            Cipher = mystery(Cipher, x+1, y, lucky, "code", t)
+            return (x+1, y)
+        
+        if Map[y][x+1] == 6: #Event where player find lucky dice
+            print("You found a lucky dice! for the next 10 turns you will have extra luck")
+            print("This will allow you to get an item from a chest 100% of the time")
+            lucky = True
+            luckydice = 10
+            Map[y][x+1] = 0
+            return (x+1, y)
+        
+        if Map[y][x+1] == 7: #Event where player comes across gatekeeper
+            if Sword == True:
+                YN = input("would you like to challenge the gatekeeper? Y/N: ").lower()
+                if YN == "y":
+                    defeat = gatekeeper(x+1, y, attackChoice, Map, defeat, t)
+                    return (x+1, y)
+                else:
+                    print("Very well, challenge me once your ready")
+                    return(x, y)
+            else:
+                print("You dont have a sword to challnge the gatekeeper")
+                return(x, y)
+            
+        if Map[y][x+1] == 8: #Event where player opens deription machine
+            deciphered, Dmessage = decriptionM(x+1, y, Emessage, deciphered)
+            return(x, y)
+
+        if Map[y][x+1] == 9: #Event where player comes to final machine
+            if defeat == True:
+                final = finalGate(sentence, defeat, t)
+                if done == True:
+                    return (x+1, y)
+                else:
+                    return(x, y)
+            elif defeat == False:
+                print("Come back once you have defeated the gatekeeper")
+                return(x, y)
+
+    #they attempted a bad move
+    print ("**Invalid move** Try again.")
+    if lucky == True:
+        luckydice = luckydice + 1
+    return (x,y)   #return the same location they are in since no move
+
+#ACTIVATING MOVING FUNCTIONS
+def moveR(): #MOVING RIGHT
+    ball.goto(ball.xcor()+size, ball.ycor())
+
+def moveL(): #MOVING LEFT
+    ball.goto(ball.xcor()-size, ball.ycor())
+
+def moveUp(): #MOVING UP
+        ball.goto(ball.xcor(), ball.ycor()+size)
+        
+def moveDown(): #MOVING DOWN
+        ball.goto(ball.xcor(), ball.ycor()-size)
+        
+listen()
+
+onkey(moveR, "d") or onkey(moveR, "Right") #ABLE TO USE ARROW KEYS OR W,A,S,D
+onkey(moveL, "a") or onkey(moveL, "Left")
+onkey(moveUp, "w") or onkey(moveUp, "Up")
+onkey(moveDown, "s") or onkey(moveDown, "Down")
+
+#Set our starting location
+currX = 1 #COLUMN
+currY = 9 #ROW
+#ACTIVATING FUNCTIONS
+Emessage = cipher(sentence, code)
+#INTRO
+print("Welcome, here your main objective is to escape by going to the green square/@")
+print("You begin with an encripted message:", Emessage, "find a way to decipher")
+print("You must also find and defeat the gatekeeper")
+print("The rest you must find out on your own")
+begin = input("Input any button to begin: ")
+
+#DRAWS MAP BEOFRE PLAYER IS ASKED TO MOVE
+drawMap(currX, currY)
+drawGrid(currX, currY, size, grid)
+
+while True:
+    window.update()
+    moveDir = input("Enter direction (w,a,s,d): ").lower()
+    currX, currY = movePlayer(currX, currY, moveDir, t)
+    drawMap(currX, currY)
+    drawGrid(currX, currY, size, grid)
+    #drawgraphicMap
+    print("Your current total of key(s) is:", keyCount)
+    print("The encrypted message says", Emessage)
+    if lucky == True: #Once player has dice print this out
+        luckydice = luckydice - 1
+        print("Your turn count for Luck is", luckydice)
+        if luckydice == 0: #Once luck has ran out dont print this again
+            print("luck has ran out")
+            lucky = False
+    if Cipher == True: # Once code number found print this
+        print("The encription number is", code)
+    if deciphered == True: #Once code deciphered print the deciphered message
+        print("The message is", Dmessage)
+
+
+
+
