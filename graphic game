@@ -1,4 +1,4 @@
-aimport turtle
+import turtle
 from turtle import *
 import random
 import time
@@ -105,23 +105,25 @@ def drawGrid(currX, currY, size, grid):
                     drawsquare(c, r, size, grid, "white")
                 elif Map[y][x] == 2:
                     drawsquare(c, r, size, grid, "white")
-                    drawcircle(c+size/2, r+size/4.5, size, grid, "yellow", 6)
+                    drawcircle(c+size/2, r+size/4.5, size, grid, "gold", 6)
                 elif Map[y][x] == 3:
                     drawsquare(c, r, size, grid, "gray")
                 elif Map[y][x] == 4:
-                    drawsquare(c, r, size, grid, "brown")
+                    drawsquare(c, r, size, grid, "saddlebrown")
+                    drawcircle(c+size/2, r+size/4.5, size, grid, "firebrick", 5)
                 elif Map[y][x] == 5:
-                    drawsquare(c, r, size, grid, "brown")
+                    drawsquare(c, r, size, grid, "saddlebrown")
+                    drawcircle(c+size/2, r+size/4.5, size, grid, "deepskyblue", 5)
                 elif Map[y][x] == 6:
                     drawsquare(c, r, size, grid, "white")
-                    drawcircle(c+size/2, r+size/4.5, size, grid, "gold", 8)
+                    drawcircle(c+size/2, r+size/4.5, size, grid, "goldenrod", 8)
                 elif Map[y][x] == 7:
                     drawsquare(c, r, size, grid, "white")
                     drawcircle(c+size/2, r+size/4.5, size, grid, "red", 3)
                 elif Map[y][x] == 8:
-                    drawsquare(c, r, size, grid, "green")
+                    drawsquare(c, r, size, grid, "seagreen")
                 elif Map[y][x] == 9:
-                    drawsquare(c, r, size, grid, "orange")
+                    drawsquare(c, r, size, grid, "darkorchid")
                 else:
                     drawsquare(c, r, size, grid, "black")
 #DRAWING THE LIST ON IDLE SHELL
